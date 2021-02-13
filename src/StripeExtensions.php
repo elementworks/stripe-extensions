@@ -10,16 +10,17 @@
 
 namespace elementworks\stripeextensions;
 
-use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
-use elementworks\stripeextensions\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
+use craft\elements\User;
 use craft\events\PluginEvent;
+use craft\services\Plugins;
 
-use enupal\stripe\services\Orders;
+use elementworks\stripeextensions\models\Settings;
+use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
+
 use enupal\stripe\events\OrderCompleteEvent;
+use enupal\stripe\services\Orders;
 use enupal\stripe\Stripe;
 
 use yii\base\Event;
