@@ -15,14 +15,13 @@
 
 {% import "_includes/forms" as forms %}
 
-{#{% do view.registerAssetBundle("elementworks\\stripeextensions\\assetbundles\\stripeextensions\\StripeExtensionsAsset") %}#}
-
 {{ forms.selectField({
+    first: true,
     label: 'Subscriber user group',
     instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
     id: 'subscriberUserGroup',
     name: 'subscriberUserGroup',
-    value: settings['subscriberUserGroup'],
+    value: settings.subscriberUserGroup,
     options: userGroups})
 }}
 
@@ -31,5 +30,5 @@
     instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
     id: 'sendActivationEmail',
     name: 'sendActivationEmail',
-    value: settings['sendActivationEmail']})
+    on: settings.sendActivationEmail})
 }}
