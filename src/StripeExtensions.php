@@ -154,7 +154,7 @@ class StripeExtensions extends Plugin
             Craft::$app->getUsers()->assignUserToGroups($user->id, [$this->getSettings()->subscriberUserGroup]);
             // passing user to order
             $order->userId = $user->id;
-            StripePlugin::$app->orders->saveOrder($order, false);
+            Stripe::$app->orders->saveOrder($order, false);
         });
     }
 
