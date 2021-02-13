@@ -39,14 +39,14 @@ class Settings extends Model
      *
      * @var string
      */
-    public subscriberUserGroup;
+    public $subscriberUserGroup;
 
     /**
      * Some field model attribute
      *
      * @var boolean
      */
-    public sendActivationEmail;
+    public $sendActivationEmail;
 
     // Public Methods
     // =========================================================================
