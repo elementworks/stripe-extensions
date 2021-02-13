@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021 Steve Rowling
  */
 
-namespace elementworksltd\stripeextensions;
+namespace elementworks\stripeextensions;
 
 use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
 use elementworks\stripeextensions\models\Settings;
