@@ -1,0 +1,45 @@
+{
+    "name": "elementworks/stripe-extensions",
+    "description": "Provides additional functionality to Enupal Stripe Payments plugin",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "stripe extensions"
+    ],
+    "support": {
+        "docs": "https://github.com/elementworks/stripe-extensions/blob/master/README.md",
+        "issues": "https://github.com/elementworks/stripe-extensions/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Steve Rowling",
+            "homepage": "https://springworks.co.uk"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0",
+        "enupal/stripe": "3.2.3"
+    },
+    "autoload": {
+        "psr-4": {
+          "elementworks\\stripeextensions\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Stripe Extensions",
+        "handle": "stripe-extensions",
+        "developer": "Steve Rowling",
+        "developerUrl": "https://springworks.co.uk",
+        "documentationUrl": "https://github.com/elementworks/stripe-extensions/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/elementworks/stripe-extensions/master/CHANGELOG.md",
+        "components": {
+            "stripeExtensionsService": "elementworks\\stripeextensions\\services\\StripeExtensionsService"
+        },
+        "class": "elementworks\\stripeextensions\\StripeExtensions"
+    }
+}

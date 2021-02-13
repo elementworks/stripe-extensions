@@ -1,0 +1,34 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Stripe Extensions plugin for Craft CMS 3.x
+ *
+ * Stripe Extensions Settings.twig
+ *
+ * @author    Steve Rowling
+ * @copyright Copyright (c) 2021 Steve Rowling
+ * @link      https://springworks.co.uk
+ * @package   StripeExtensions
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{#{% do view.registerAssetBundle("elementworks\\stripeextensions\\assetbundles\\stripeextensions\\StripeExtensionsAsset") %}#}
+
+{{ forms.selectField({
+    label: 'Subscriber user group',
+    instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
+    id: 'subscriberUserGroup',
+    name: 'subscriberUserGroup',
+    value: settings['subscriberUserGroup']})
+}}
+
+{{ forms.lightswitchField({
+    label: 'Send new user activation email',
+    instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
+    id: 'sendActivationEmail',
+    name: 'sendActivationEmail',
+    value: settings['sendActivationEmail']})
+}}
