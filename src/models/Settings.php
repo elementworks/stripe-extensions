@@ -44,7 +44,7 @@ class Settings extends Model
     /**
      * Some field model attribute
      *
-     * @var boolean
+     * @var bool
      */
     public $sendActivationEmail;
 
@@ -67,9 +67,6 @@ class Settings extends Model
             ['subscriberUserGroup', 'required'],
             ['subscriberUserGroup', 'string'],
             ['subscriberUserGroup', 'default', 'value' => ''],
-            ['sendActivationEmail', 'required'],
-            ['sendActivationEmail', 'boolean'],
-            ['sendActivationEmail', 'default', 'value' => false],
         ];
     }
 }
