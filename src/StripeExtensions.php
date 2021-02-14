@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\elements\User;
 use craft\events\PluginEvent;
+use craft\helpers\DateTimeHelper;
 use craft\services\Plugins;
 
 use elementworks\stripeextensions\models\Settings;
@@ -174,7 +175,7 @@ class StripeExtensions extends Plugin
                 $subscription = $order->getSubscription();
                 if ($subscription) {
                     $user->setFieldValues([
-                        $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
+                        $this->getSettings()->subscriptionExpiryDateField => DateTimeHelper::toDateTime($subscription->endDate)
                     ]);
                     Craft::$app->getElements()->saveElement($user, false);
                 }
