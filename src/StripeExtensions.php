@@ -20,6 +20,7 @@ use elementworks\stripeextensions\models\Settings;
 use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
 
 use enupal\stripe\events\OrderCompleteEvent;
+use enupal\stripe\events\WebhookEvent;
 use enupal\stripe\services\Orders;
 use enupal\stripe\Stripe;
 
@@ -103,31 +104,31 @@ class StripeExtensions extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     // We were just installed
                 }
             }
         );
 
-/**
- * Logging in Craft involves using one of the following methods:
- *
- * Craft::trace(): record a message to trace how a piece of code runs. This is mainly for development use.
- * Craft::info(): record a message that conveys some useful information.
- * Craft::warning(): record a warning message that indicates something unexpected has happened.
- * Craft::error(): record a fatal error that should be investigated as soon as possible.
- *
- * Unless `devMode` is on, only Craft::warning() & Craft::error() will log to `craft/storage/logs/web.log`
- *
- * It's recommended that you pass in the magic constant `__METHOD__` as the second parameter, which sets
- * the category to the method (prefixed with the fully qualified class name) where the constant appears.
- *
- * To enable the Yii debug toolbar, go to your user account in the AdminCP and check the
- * [] Show the debug toolbar on the front end & [] Show the debug toolbar on the Control Panel
- *
- * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
- */
+        /**
+         * Logging in Craft involves using one of the following methods:
+         *
+         * Craft::trace(): record a message to trace how a piece of code runs. This is mainly for development use.
+         * Craft::info(): record a message that conveys some useful information.
+         * Craft::warning(): record a warning message that indicates something unexpected has happened.
+         * Craft::error(): record a fatal error that should be investigated as soon as possible.
+         *
+         * Unless `devMode` is on, only Craft::warning() & Craft::error() will log to `craft/storage/logs/web.log`
+         *
+         * It's recommended that you pass in the magic constant `__METHOD__` as the second parameter, which sets
+         * the category to the method (prefixed with the fully qualified class name) where the constant appears.
+         *
+         * To enable the Yii debug toolbar, go to your user account in the AdminCP and check the
+         * [] Show the debug toolbar on the front end & [] Show the debug toolbar on the Control Panel
+         *
+         * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
+         */
         Craft::info(
             Craft::t(
                 'stripe-extensions',
@@ -170,8 +171,42 @@ class StripeExtensions extends Plugin
             // Update subscription expiry date on user
             if ($this->getSettings()->setSubscriptionExpiryDate && $this->getSettings()->subscriptionExpiryDateField) {
                 // Set the subscription expiry date here…
+                $subscription = $order->getSubscription();
+                if ($subscription) {
+                    $user->setFieldValues([
+                        $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
+                    ]);
+                }
             }
-         });
+        });
+
+        Event::on(Orders::class, Orders::EVENT_AFTER_PROCESS_WEBHOOK, function(WebhookEvent $e) {
+            $data = $e->stripeData;
+            $order = $e->order;
+
+            if ($order) {
+                $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($order->email);
+
+                if ($user) {
+                    switch ($data['type']) {
+                        //Occurs whenever a customer recurring invoice is paid
+                        case 'invoice.paid':
+                            // Update subscription expiry date
+                            if ($this->getSettings()->setSubscriptionExpiryDate && $this->getSettings()->subscriptionExpiryDateField) {
+                                // Set the subscription expiry date here…
+                                /** @var \enupal\stripe\models\Subscription $subscription */
+                                $subscription = $order->getSubscription();
+                                if ($subscription) {
+                                    $user->setFieldValues([
+                                        $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
+                                    ]);
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     // Protected Methods
@@ -204,12 +239,17 @@ class StripeExtensions extends Plugin
         }
         $fields = Craft::$app->getFields();
         $userFields = $fields->getFieldsByElementType(User::class);
-        $userFieldOptions = [];
+        $userFieldOptions = [
+            'label' => 'Choose…',
+            'value' => ''
+        ];
         foreach ($userFields as $field) {
-            $userFieldOptions[] = [
-                'label' => $field->name,
-                'value' => $field->handle
-            ];
+            if ($field->type === 'craft\fields\Date') {
+                $userFieldOptions[] = [
+                    'label' => $field->name,
+                    'value' => $field->handle
+                ];
+            }
         }
         return Craft::$app->view->renderTemplate(
             'stripe-extensions/settings',
