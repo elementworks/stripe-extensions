@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.11 - 2021-02-14
+### Fixed
+- Fix check field type
+
 ## 1.0.10 - 2021-02-14
 ### Added
 - Add webhook handler to update subscription expiry date on user after invoice.paid event
