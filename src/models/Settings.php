@@ -40,6 +40,7 @@ class Settings extends Model
      * @var string
      */
     public $subscriberUserGroup;
+    public $subscriptionExpiryDateField;
 
     /**
      * Some field model attribute
@@ -48,6 +49,7 @@ class Settings extends Model
      */
     public $sendActivationEmail;
     public $autoLoginUser;
+    public $setSubscriptionExpiryDate;
 
     // Public Methods
     // =========================================================================
