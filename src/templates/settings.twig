@@ -32,3 +32,11 @@
     name: 'sendActivationEmail',
     on: settings.sendActivationEmail})
 }}
+
+{{ forms.lightswitchField({
+    label: 'Automatically login new user',
+    instructions: 'Automatically login the new user after they have been created.',
+    id: 'autoLoginUser',
+    name: 'autoLoginUser',
+    on: settings.autoLoginUser})
+}}

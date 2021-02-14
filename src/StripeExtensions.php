@@ -139,23 +139,34 @@ class StripeExtensions extends Plugin
 
         Event::on(Orders::class, Orders::EVENT_AFTER_ORDER_COMPLETE, function(OrderCompleteEvent $e) {
             $order = $e->order;
-            $user = new User();
-            $user->pending = false;
-            $user->username = $order->email;
-            $user->email = $order->email;
-            $user->passwordResetRequired = false;
-            $user->validate(null, false);
-            Craft::$app->getElements()->saveElement($user, false);
-            // uncomment the next line if needed
-            if ($this->getSettings()->sendActivationEmail) {
-                Craft::$app->getUsers()->sendActivationEmail($user);
+
+            //  Check for existing user
+            $existingUser = Craft::$app->getUsers()->getUserByUsernameOrEmail($order->email);
+
+            if (!$existingUser) {
+                $user = new User();
+                $user->pending = false;
+                $user->username = $order->email;
+                $user->email = $order->email;
+                $user->passwordResetRequired = false;
+                $user->validate(null, false);
+                Craft::$app->getElements()->saveElement($user, false);
+                // Add user to subscriber userGroup
+                Craft::$app->getUsers()->assignUserToGroups($user->id, [$this->getSettings()->subscriberUserGroup]);
+                // Send activation email if desired
+                if ($this->getSettings()->sendActivationEmail) {
+                    Craft::$app->getUsers()->sendActivationEmail($user);
+                }
+                // Auto login new user if desired
+                if ($this->getSettings()->autoLoginUser) {
+                    $generalConfig = Craft::$app->getConfig()->getGeneral();
+                    Craft::$app->getUser()->login($user, $generalConfig->userSessionDuration);
+                }
+                // Add new user to order
+                $order->userId = $user->id;
+                Stripe::$app->orders->saveOrder($order, false);
             }
-            // passing the user groups IDs here
-            Craft::$app->getUsers()->assignUserToGroups($user->id, [$this->getSettings()->subscriberUserGroup]);
-            // passing user to order
-            $order->userId = $user->id;
-            Stripe::$app->orders->saveOrder($order, false);
-        });
+         });
     }
 
     // Protected Methods
