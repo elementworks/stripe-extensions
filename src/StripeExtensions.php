@@ -141,9 +141,9 @@ class StripeExtensions extends Plugin
             $order = $e->order;
 
             //  Check for existing user
-            $existingUser = Craft::$app->getUsers()->getUserByUsernameOrEmail($order->email);
+            $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($order->email);
 
-            if (!$existingUser) {
+            if (!$user) {
                 $user = new User();
                 $user->pending = false;
                 $user->username = $order->email;
@@ -165,6 +165,11 @@ class StripeExtensions extends Plugin
                 // Add new user to order
                 $order->userId = $user->id;
                 Stripe::$app->orders->saveOrder($order, false);
+            }
+
+            // Update subscription expiry date on user
+            if ($this->getSettings()->setSubscriptionExpiryDate && $this->getSettings()->subscriptionExpiryDateField) {
+                // Set the subscription expiry date here…
             }
          });
     }
@@ -192,13 +197,26 @@ class StripeExtensions extends Plugin
     {
         $userGroups = Craft::$app->getUserGroups();
         foreach ($userGroups->getAllGroups() as $group) {
-            $groups[] = array('label' => $group->name, 'value' => $group->id);
+            $groups[] = [
+                'label' => $group->name,
+                'value' => $group->id
+            ];
+        }
+        $fields = Craft::$app->getFields();
+        $userFields = $fields->getFieldsByElementType(User::class);
+        $userFieldOptions = [];
+        foreach ($userFields as $field) {
+            $userFieldOptions[] = [
+                'label' => $field->name,
+                'value' => $field->handle
+            ];
         }
         return Craft::$app->view->renderTemplate(
             'stripe-extensions/settings',
             [
                 'settings' => $this->getSettings(),
-                'userGroups' => $groups ?? null
+                'userGroups' => $groups ?? null,
+                'userFields' => $userFieldOptions ?? null
             ]
         );
     }

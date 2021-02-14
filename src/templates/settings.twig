@@ -27,7 +27,7 @@
 
 {{ forms.lightswitchField({
     label: 'Send new user activation email',
-    instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
+    instructions: 'Send new user activation email to the newly created user.',
     id: 'sendActivationEmail',
     name: 'sendActivationEmail',
     on: settings.sendActivationEmail})
@@ -39,4 +39,22 @@
     id: 'autoLoginUser',
     name: 'autoLoginUser',
     on: settings.autoLoginUser})
+}}
+
+{{ forms.lightswitchField({
+    label: 'Set subscription expiry date',
+    instructions: 'Set subscription expiry date to a user field (specified below). This will automatically update as each invoice is padi in Stripe by the user.',
+    id: 'setSubscriptionExpiryDate',
+    name: 'setSubscriptionExpiryDate',
+    on: settings.setSubscriptionExpiryDate})
+}}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Subscription expiry date field',
+    instructions: 'Choose the user field to save the subscription expiry date to.',
+    id: 'subscriptionExpiryDateField',
+    name: 'subscriptionExpiryDateField',
+    value: settings.subscriptionExpiryDateField,
+    options: userFields})
 }}
