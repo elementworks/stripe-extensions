@@ -47,6 +47,7 @@ class Settings extends Model
      * @var bool
      */
     public $sendActivationEmail;
+    public $autoLoginUser;
 
     // Public Methods
     // =========================================================================

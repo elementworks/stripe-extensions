@@ -2,7 +2,7 @@
     "name": "elementworks/stripe-extensions",
     "description": "Provides additional functionality to Enupal Stripe Payments plugin",
     "type": "craft-plugin",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "keywords": [
         "craft",
         "cms",
