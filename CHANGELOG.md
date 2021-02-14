@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.8 - 2021-02-14
+### Added
+- Add option to auto login new user after creation
+
+### Changed
+- Check for existing user before creating new one
+
 ## 1.0.7 - 2021-02-13
 ### Fixed
 - Fix reference to Stripe plugin class
