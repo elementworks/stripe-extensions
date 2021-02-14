@@ -176,6 +176,7 @@ class StripeExtensions extends Plugin
                     $user->setFieldValues([
                         $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
                     ]);
+                    Craft::$app->getElements()->saveElement($user, false);
                 }
             }
         });
@@ -200,6 +201,7 @@ class StripeExtensions extends Plugin
                                     $user->setFieldValues([
                                         $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
                                     ]);
+                                    Craft::$app->getElements()->saveElement($user, false);
                                 }
                             }
                             break;
