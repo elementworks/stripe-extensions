@@ -244,7 +244,7 @@ class StripeExtensions extends Plugin
             'value' => ''
         ];
         foreach ($userFields as $field) {
-            if ($field->type === 'craft\fields\Date') {
+            if (get_class($field) === 'craft\fields\Date') {
                 $userFieldOptions[] = [
                     'label' => $field->name,
                     'value' => $field->handle
