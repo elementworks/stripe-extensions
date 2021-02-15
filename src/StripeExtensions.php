@@ -14,7 +14,6 @@ use Craft;
 use craft\base\Plugin;
 use craft\elements\User;
 use craft\events\PluginEvent;
-use craft\helpers\DateTimeHelper;
 use craft\services\Plugins;
 
 use elementworks\stripeextensions\models\Settings;
@@ -158,6 +157,8 @@ class StripeExtensions extends Plugin
                 // Send activation email if desired
                 if ($this->getSettings()->sendActivationEmail) {
                     Craft::$app->getUsers()->sendActivationEmail($user);
+                } else {
+                    Craft::$app->getUsers()->activateUser($user);
                 }
                 // Auto login new user if desired
                 if ($this->getSettings()->autoLoginUser) {
@@ -175,7 +176,7 @@ class StripeExtensions extends Plugin
                 $subscription = $order->getSubscription();
                 if ($subscription) {
                     $user->setFieldValues([
-                        $this->getSettings()->subscriptionExpiryDateField => DateTimeHelper::toDateTime($subscription->endDate)
+                        $this->getSettings()->subscriptionExpiryDateField => \DateTime::createFromFormat("m/d/Y" , $subscription->endDate)
                     ]);
                     Craft::$app->getElements()->saveElement($user, false);
                 }
@@ -200,7 +201,7 @@ class StripeExtensions extends Plugin
                                 $subscription = $order->getSubscription();
                                 if ($subscription) {
                                     $user->setFieldValues([
-                                        $this->getSettings()->subscriptionExpiryDateField => $subscription->endDate
+                                        $this->getSettings()->subscriptionExpiryDateField => \DateTime::createFromFormat("m/d/Y" , $subscription->endDate)
                                     ]);
                                     Craft::$app->getElements()->saveElement($user, false);
                                 }
