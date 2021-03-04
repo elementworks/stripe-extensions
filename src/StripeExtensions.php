@@ -19,9 +19,7 @@ use craft\services\Plugins;
 use elementworks\stripeextensions\models\Settings;
 use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
 
-use enupal\stripe\events\OrderCompleteEvent;
 use enupal\stripe\events\WebhookEvent;
-use enupal\stripe\services\Orders;
 use enupal\stripe\Stripe;
 
 use yii\base\Event;
@@ -138,51 +136,6 @@ class StripeExtensions extends Plugin
             __METHOD__
         );
 
-        Event::on(Orders::class, Orders::EVENT_AFTER_ORDER_COMPLETE, function(OrderCompleteEvent $e) {
-            $order = $e->order;
-
-            //  Check for existing user
-            $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($order->email);
-
-            if (!$user) {
-                $user = new User();
-                $user->pending = false;
-                $user->username = $order->email;
-                $user->email = $order->email;
-                $user->passwordResetRequired = false;
-                $user->validate(null, false);
-                Craft::$app->getElements()->saveElement($user, false);
-                // Add user to subscriber userGroup
-                Craft::$app->getUsers()->assignUserToGroups($user->id, [$this->getSettings()->subscriberUserGroup]);
-                // Send activation email if desired
-                if ($this->getSettings()->sendActivationEmail) {
-                    Craft::$app->getUsers()->sendActivationEmail($user);
-                } else {
-                    Craft::$app->getUsers()->activateUser($user);
-                }
-                // Auto login new user if desired
-                if ($this->getSettings()->autoLoginUser) {
-                    $generalConfig = Craft::$app->getConfig()->getGeneral();
-                    Craft::$app->getUser()->login($user, $generalConfig->userSessionDuration);
-                }
-                // Add new user to order
-                $order->userId = $user->id;
-                Stripe::$app->orders->saveOrder($order, false);
-            }
-
-            // Update subscription expiry date on user
-            if ($this->getSettings()->setSubscriptionExpiryDate && $this->getSettings()->subscriptionExpiryDateField) {
-                // Set the subscription expiry date here…
-                $subscription = $order->getSubscription();
-                if ($subscription) {
-                    $user->setFieldValues([
-                        $this->getSettings()->subscriptionExpiryDateField => \DateTime::createFromFormat("m/d/Y" , $subscription->endDate)
-                    ]);
-                    Craft::$app->getElements()->saveElement($user, false);
-                }
-            }
-        });
-
         Event::on(Orders::class, Orders::EVENT_AFTER_PROCESS_WEBHOOK, function(WebhookEvent $e) {
             $data = $e->stripeData;
             $order = $e->order;
@@ -192,19 +145,15 @@ class StripeExtensions extends Plugin
 
                 if ($user) {
                     switch ($data['type']) {
-                        //Occurs whenever a customer recurring invoice is paid
-                        case 'invoice.paid':
+                        //Occurs whenever a customer's subscription ends
+                        case 'customer.subscription.deleted':
                             // Update subscription expiry date
-                            if ($this->getSettings()->setSubscriptionExpiryDate && $this->getSettings()->subscriptionExpiryDateField) {
-                                // Set the subscription expiry date here…
-                                /** @var \enupal\stripe\models\Subscription $subscription */
-                                $subscription = $order->getSubscription();
-                                if ($subscription) {
-                                    $user->setFieldValues([
-                                        $this->getSettings()->subscriptionExpiryDateField => \DateTime::createFromFormat("m/d/Y" , $subscription->endDate)
-                                    ]);
-                                    Craft::$app->getElements()->saveElement($user, false);
-                                }
+                            if ($this->getSettings()->toggleUserField && $this->getSettings()->userLightswitchField) {
+                                // Toggle the value of the user lightswitch field
+                                $user->setFieldValues([
+                                    $this->getSettings()->userLightswitchField => $user->getFieldValue($this->getSettings()->userLightswitchField) ? 0 : 1
+                                ]);
+                                Craft::$app->getElements()->saveElement($user, false);
                             }
                             break;
                     }
@@ -234,13 +183,6 @@ class StripeExtensions extends Plugin
      */
     protected function settingsHtml(): string
     {
-        $userGroups = Craft::$app->getUserGroups();
-        foreach ($userGroups->getAllGroups() as $group) {
-            $groups[] = [
-                'label' => $group->name,
-                'value' => $group->id
-            ];
-        }
         $fields = Craft::$app->getFields();
         $userFields = $fields->getFieldsByElementType(User::class);
         $userFieldOptions = [
@@ -248,7 +190,7 @@ class StripeExtensions extends Plugin
             'value' => ''
         ];
         foreach ($userFields as $field) {
-            if (get_class($field) === 'craft\fields\Date') {
+            if (get_class($field) === 'craft\fields\Lightswitch') {
                 $userFieldOptions[] = [
                     'label' => $field->name,
                     'value' => $field->handle
@@ -259,7 +201,6 @@ class StripeExtensions extends Plugin
             'stripe-extensions/settings',
             [
                 'settings' => $this->getSettings(),
-                'userGroups' => $groups ?? null,
                 'userFields' => $userFieldOptions ?? null
             ]
         );

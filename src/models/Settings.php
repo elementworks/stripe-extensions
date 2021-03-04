@@ -39,17 +39,14 @@ class Settings extends Model
      *
      * @var string
      */
-    public $subscriberUserGroup;
-    public $subscriptionExpiryDateField;
+    public $userLightswitchField;
 
     /**
      * Some field model attribute
      *
      * @var bool
      */
-    public $sendActivationEmail;
-    public $autoLoginUser;
-    public $setSubscriptionExpiryDate;
+    public $toggleUserField;
 
     // Public Methods
     // =========================================================================
@@ -67,9 +64,6 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['subscriberUserGroup', 'required'],
-            ['subscriberUserGroup', 'string'],
-            ['subscriberUserGroup', 'default', 'value' => ''],
         ];
     }
 }
