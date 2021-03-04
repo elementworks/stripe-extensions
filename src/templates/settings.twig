@@ -15,46 +15,21 @@
 
 {% import "_includes/forms" as forms %}
 
-{{ forms.selectField({
+{{ forms.lightswitchField({
     first: true,
-    label: 'Subscriber user group',
-    instructions: 'Choose the user group to add new subscribers to after a subscription has been successfully purchased by a guest user.',
-    id: 'subscriberUserGroup',
-    name: 'subscriberUserGroup',
-    value: settings.subscriberUserGroup,
-    options: userGroups})
-}}
-
-{{ forms.lightswitchField({
-    label: 'Send new user activation email',
-    instructions: 'Send new user activation email to the newly created user.',
-    id: 'sendActivationEmail',
-    name: 'sendActivationEmail',
-    on: settings.sendActivationEmail})
-}}
-
-{{ forms.lightswitchField({
-    label: 'Automatically login new user',
-    instructions: 'Automatically login the new user after they have been created.',
-    id: 'autoLoginUser',
-    name: 'autoLoginUser',
-    on: settings.autoLoginUser})
-}}
-
-{{ forms.lightswitchField({
-    label: 'Set subscription expiry date',
-    instructions: 'Set subscription expiry date to a user field (specified below). This will automatically update as each invoice is padi in Stripe by the user.',
-    id: 'setSubscriptionExpiryDate',
-    name: 'setSubscriptionExpiryDate',
-    on: settings.setSubscriptionExpiryDate})
+    label: 'Toggle user lightswitch field when subscription ends',
+    instructions: 'Toggle the value of a user lightswitch field (specified below) when their subscription ends. This is triggered by the webhook from Stripe when the `customer.subscription.deleted` event occurs.',
+    id: 'toggleUserField',
+    name: 'toggleUserField',
+    on: settings.toggleUserField})
 }}
 
 {{ forms.selectField({
     first: true,
-    label: 'Subscription expiry date field',
+    label: 'User lightswitch field',
     instructions: 'Choose the user field to save the subscription expiry date to.',
-    id: 'subscriptionExpiryDateField',
-    name: 'subscriptionExpiryDateField',
-    value: settings.subscriptionExpiryDateField,
+    id: 'userLightswitchField',
+    name: 'userLightswitchField',
+    value: settings.userLightswitchField,
     options: userFields})
 }}
