@@ -20,6 +20,7 @@ use elementworks\stripeextensions\models\Settings;
 use elementworks\stripeextensions\services\StripeExtensionsService as StripeExtensionsServiceService;
 
 use enupal\stripe\events\WebhookEvent;
+use enupal\stripe\services\Orders;
 use enupal\stripe\Stripe;
 
 use yii\base\Event;
