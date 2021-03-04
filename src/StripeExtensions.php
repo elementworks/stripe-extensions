@@ -149,10 +149,10 @@ class StripeExtensions extends Plugin
                         //Occurs whenever a customer's subscription ends
                         case 'customer.subscription.deleted':
                             // Update subscription expiry date
-                            if ($this->getSettings()->toggleUserField && $this->getSettings()->userLightswitchField) {
-                                // Toggle the value of the user lightswitch field
+                            if ($this->getSettings()->enableUserFieldOnSubscriptionEnd && $this->getSettings()->userLightswitchField) {
+                                // Enable the value of the user lightswitch field
                                 $user->setFieldValues([
-                                    $this->getSettings()->userLightswitchField => $user->getFieldValue($this->getSettings()->userLightswitchField) ? 0 : 1
+                                    $this->getSettings()->userLightswitchField => 1
                                 ]);
                                 Craft::$app->getElements()->saveElement($user, false);
                             }
