@@ -17,11 +17,11 @@
 
 {{ forms.lightswitchField({
     first: true,
-    label: 'Toggle user lightswitch field when subscription ends',
-    instructions: 'Toggle the value of a user lightswitch field (specified below) when their subscription ends. This is triggered by the webhook from Stripe when the `customer.subscription.deleted` event occurs.',
-    id: 'toggleUserField',
-    name: 'toggleUserField',
-    on: settings.toggleUserField})
+    label: 'Enable user lightswitch field when subscription ends',
+    instructions: 'Enable a user lightswitch field (specified below) when their subscription ends. This is triggered by the webhook from Stripe when the `customer.subscription.deleted` event occurs.',
+    id: 'enableUserFieldOnSubscriptionEnd',
+    name: 'enableUserFieldOnSubscriptionEnd',
+    on: settings.enableUserFieldOnSubscriptionEnd})
 }}
 
 {{ forms.selectField({

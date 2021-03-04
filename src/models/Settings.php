@@ -46,7 +46,7 @@ class Settings extends Model
      *
      * @var bool
      */
-    public $toggleUserField;
+    public $enableUserFieldOnSubscriptionEnd;
 
     // Public Methods
     // =========================================================================
