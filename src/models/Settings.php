@@ -35,18 +35,25 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Some field model attribute
+     * Handle of user lightswitch field
      *
      * @var string
      */
     public $userLightswitchField;
 
     /**
-     * Some field model attribute
+     * Enable a user lightswitch field (specified above) when their subscription ends. This is triggered by the webhook from Stripe when the `customer.subscription.deleted` event occurs.
      *
      * @var bool
      */
     public $enableUserFieldOnSubscriptionEnd;
+
+    /**
+     * Send a user an email when their subscription trial ends.
+     *
+     * @var bool
+     */
+    public $sendEmailOnSubscriptionTrialEnd;
 
     // Public Methods
     // =========================================================================
