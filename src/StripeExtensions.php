@@ -109,7 +109,7 @@ class StripeExtensions extends Plugin
                 $site = Craft::$app->getSites()->getCurrentSite();
 
                 $e->messages[] = new SystemMessage([
-                    'key' => $this->MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END,
+                    'key' => self::MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END,
                     'heading' => 'When a subscription trial is about to end:',
                     'subject' => $site->name.': Subscription Trial Ending',
                     'body' => file_get_contents(Craft::getAlias('@elementworks/stripeextensions/emails/stripe-subscription-trial-will-end.twig')),
@@ -181,7 +181,7 @@ class StripeExtensions extends Plugin
                             if ($this->getSettings()->sendEmailOnSubscriptionTrialEnd) {
                                 $mailer = Craft::$app->getMailer();
                                 $mailer
-                                    ->composeFromKey($this->MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END, [
+                                    ->composeFromKey(self::MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END, [
                                         'user' => $user
                                     ])
                                     ->setFrom($mailer->from)
