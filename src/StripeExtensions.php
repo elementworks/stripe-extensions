@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\elements\User;
 use craft\events\PluginEvent;
+use craft\events\RegisterEmailMessagesEvent
 use craft\services\Plugins;
 use craft\services\SystemMessages;
 use elementworks\stripeextensions\models\Settings;
