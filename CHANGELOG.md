@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.6 - 2023-11-20
+### Changed
+- Change email notification to fire on `customer.subscription.deleted` Stripe event instead of `customer.subscription.trial_will_end` Stripe event
+
 ## 1.2.5 - 2023-10-12
 ### Changed
 - Change Enupal Stripe plugin dependency to ^4.0.0
