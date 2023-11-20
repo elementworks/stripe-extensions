@@ -49,11 +49,11 @@ class Settings extends Model
     public $enableUserFieldOnSubscriptionEnd;
 
     /**
-     * Send a user an email when their subscription trial ends.
+     * Send a user an email when their subscription ends.
      *
      * @var bool
      */
-    public $sendEmailOnSubscriptionTrialEnd;
+    public $sendEmailOnSubscriptionEnd;
 
     // Public Methods
     // =========================================================================
