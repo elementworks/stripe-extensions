@@ -80,7 +80,7 @@ class StripeExtensions extends Plugin
      */
     public $hasCpSection = false;
 
-    public const MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END = 'stripe_subscription_trial_will_end';
+    public const MESSAGE_KEY_SUBSCRIPTION_DELETED = 'stripe_subscription_deleted';
 
     // Public Methods
     // =========================================================================
@@ -109,10 +109,10 @@ class StripeExtensions extends Plugin
                 $site = Craft::$app->getSites()->getCurrentSite();
 
                 $e->messages[] = new SystemMessage([
-                    'key' => self::MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END,
-                    'heading' => 'When a subscription trial is about to end:',
-                    'subject' => $site->name.': Subscription Trial Ending',
-                    'body' => file_get_contents(Craft::getAlias('@elementworks/stripeextensions/emails/stripe-subscription-trial-will-end.twig')),
+                    'key' => self::MESSAGE_KEY_SUBSCRIPTION_DELETED,
+                    'heading' => 'When a subscription has ended:',
+                    'subject' => $site->name.': Subscription Ended',
+                    'body' => file_get_contents(Craft::getAlias('@elementworks/stripeextensions/emails/stripe-subscription-deleted.twig')),
                 ]);
             });
 
@@ -173,15 +173,12 @@ class StripeExtensions extends Plugin
                                 ]);
                                 Craft::$app->getElements()->saveElement($user, false);
                             }
-                            break;
 
-                        // Occurs whenever a customer's trial subscription ends
-                        case 'customer.subscription.trial_will_end':
-                            // Send email if `sendEmailOnSubscriptionTrialEnd` setting enabled
-                            if ($this->getSettings()->sendEmailOnSubscriptionTrialEnd) {
+                            // Send email if `sendEmailOnSubscriptionEnd` setting enabled
+                            if ($this->getSettings()->sendEmailOnSubscriptionEnd) {
                                 $mailer = Craft::$app->getMailer();
                                 $mailer
-                                    ->composeFromKey(self::MESSAGE_KEY_SUBSCRIPTION_TRIAL_WILL_END, [
+                                    ->composeFromKey(self::MESSAGE_KEY_SUBSCRIPTION_DELETED, [
                                         'user' => $user
                                     ])
                                     ->setFrom($mailer->from)
